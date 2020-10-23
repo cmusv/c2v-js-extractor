@@ -6,7 +6,8 @@
   "type": "module",
   "scripts": {
     "start": "node main.js",
-    "test": "jest"
+    "test": "standard && jest",
+    "lint:fix": "standard --fix"
   },
   "repository": {
     "type": "git",
@@ -25,6 +26,11 @@
     "@babel/core": "^7.12.3",
     "@babel/preset-env": "^7.12.1",
     "babel-jest": "^26.6.0",
-    "jest": "^26.6.0"
+    "jest": "^26.6.0",
+    "standard": "^15.0.0"
+  },
+  "standard": {
+    "env": [ "jest" ],
+    "ignore": [ "fixtures/"]
   }
 }

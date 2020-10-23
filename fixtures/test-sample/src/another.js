@@ -1,17 +1,14 @@
 class RandomClass {
-
-  constructor() {
+  constructor () {
     this.foo = 'bar'
   }
 
-
-  someMethod() {
+  someMethod () {
     return this.foo
   }
 
-
-  anotherOne() {
-    return this.foo + " "
+  anotherOne () {
+    return this.foo + ' '
   }
 }
 
