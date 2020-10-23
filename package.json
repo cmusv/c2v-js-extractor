@@ -2,11 +2,11 @@
   "name": "c2v-js-extractor",
   "version": "1.0.0",
   "description": "code2vec extractor for Javascript",
-  "main": "main.js",
+  "main": "extractor.js",
   "type": "module",
   "scripts": {
     "start": "node main.js",
-    "test": "standard && jest",
+    "test": "jest --coverage",
     "lint:fix": "standard --fix"
   },
   "repository": {
@@ -20,6 +20,7 @@
   },
   "homepage": "https://github.com/shinmyung0/c2v-js-extractor#readme",
   "dependencies": {
+    "commander": "^6.1.0",
     "esprima": "^4.0.1"
   },
   "devDependencies": {
@@ -30,7 +31,11 @@
     "standard": "^15.0.0"
   },
   "standard": {
-    "env": [ "jest" ],
-    "ignore": [ "fixtures/"]
+    "env": [
+      "jest"
+    ],
+    "ignore": [
+      "fixtures/"
+    ]
   }
 }
