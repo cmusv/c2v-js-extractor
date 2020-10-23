@@ -1,0 +1,24 @@
+{
+  "name": "c2v-js-extractor",
+  "version": "1.0.0",
+  "description": "code2vec extractor for Javascript",
+  "main": "main.js",
+  "type": "module",
+  "scripts": {
+    "start": "node main.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/shinmyung0/c2v-js-extractor.git"
+  },
+  "author": "Shin Yoon",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/shinmyung0/c2v-js-extractor/issues"
+  },
+  "homepage": "https://github.com/shinmyung0/c2v-js-extractor#readme",
+  "dependencies": {
+    "esprima": "^4.0.1"
+  }
+}
