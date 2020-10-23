@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "start": "node main.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest"
   },
   "repository": {
     "type": "git",
@@ -20,5 +20,11 @@
   "homepage": "https://github.com/shinmyung0/c2v-js-extractor#readme",
   "dependencies": {
     "esprima": "^4.0.1"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.12.3",
+    "@babel/preset-env": "^7.12.1",
+    "babel-jest": "^26.6.0",
+    "jest": "^26.6.0"
   }
 }
