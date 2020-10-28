@@ -35,5 +35,11 @@ test('parsing a file that is unparseable throws', () => {
 test('getting functions definitions from AST works', () => {
   const parser = new JSFileASTParser(simpleFixture + 'main.js')
   const fns = parser.getFns()
-  console.log(fns)
+  const types = Object.entries(fns).map((e) => e[1].type)
+  expect(types.length).toBe(3)
+  expect(types).toStrictEqual([
+    'FunctionDeclaration',
+    'FunctionDeclaration',
+    'FunctionDeclaration'
+  ])
 })
