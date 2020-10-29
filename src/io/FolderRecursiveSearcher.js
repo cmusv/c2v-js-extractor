@@ -1,6 +1,5 @@
 /**
- * FolderRecursiveSearcher is responsible for iterating over all
- * JS files in a given directory and applying JSFileASTParser
+ * FolderRecursiveSearcher is used to search for JS files and iterate over folders
  */
 
 import fs from 'fs'
@@ -8,15 +7,9 @@ import util from 'util'
 import path from 'path'
 
 class FolderRecursiveSearcher {
-  constructor (workingDirectory, targetExtension) {
-    this.workingDirectory = workingDirectory
-    this.targetExtension = targetExtension
+  constructor () {
     this.readdir = util.promisify(fs.readdir)
     this.openDir = util.promisify(fs.open)
-  }
-
-  async recursiveFind () {
-    return this.recurseDirSearch(this.workingDirectory, this.targetExtension)
   }
 
   async recurseDirSearch (directory, extension) {
@@ -34,6 +27,17 @@ class FolderRecursiveSearcher {
       }
     }
     return files
+  }
+
+  async listSubdirs (directory) {
+    const dirents = await this.readdir(directory, { withFileTypes: true })
+    const result = []
+    for (const ent of dirents) {
+      if (ent.isDirectory()) {
+        result.push(path.join(directory, ent.name))
+      }
+    }
+    return result
   }
 }
 

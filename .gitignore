@@ -2,3 +2,5 @@ raw_data
 node_modules
 .vscode
 coverage
+tmp
+out
