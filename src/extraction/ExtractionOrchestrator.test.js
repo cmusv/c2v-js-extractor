@@ -50,6 +50,8 @@ test('generates correct train test val splits for small arrays', async () => {
 test('successfully extracts functions from all .js files in data folder', async () => {
   const extractor = new ExtractionOrchestrator('out', 'fixtures')
   const asts = await extractor.extractAsts()
-  const numAsts = Object.keys(asts).length
-  expect(numAsts).toBe(7)
+  const allKeys = Object.keys(asts)
+  expect(allKeys.length).toBe(7)
+
+  console.log(asts[allKeys[0]].body.body[0])
 })

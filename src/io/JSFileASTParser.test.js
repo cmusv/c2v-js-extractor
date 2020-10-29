@@ -2,7 +2,6 @@ import JSFileASTParser from './JSFileASTParser.js'
 
 const simpleFixture = 'fixtures/test-simple/'
 const unparseableFixture = 'fixtures/test-unparseable/'
-const parser = new JSFileASTParser()
 
 test('can load module fixture files', () => {
   const parser = new JSFileASTParser(simpleFixture + 'src/module.js')
