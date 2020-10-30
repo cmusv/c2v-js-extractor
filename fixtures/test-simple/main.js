@@ -1,6 +1,6 @@
 import RandomClass from './src/another.js'
 
-function helloThere () {
+function helloThere (msg1, msg2) {
   console.log('Hello there')
   const a = 'test'
   const b = 3

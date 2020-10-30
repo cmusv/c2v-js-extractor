@@ -53,5 +53,5 @@ test('successfully extracts functions from all .js files in data folder', async 
   const allKeys = Object.keys(asts)
   expect(allKeys.length).toBe(7)
 
-  console.log(asts[allKeys[0]].body.body[0])
+  console.log(asts[allKeys[0]])
 })
