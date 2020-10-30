@@ -1,6 +1,6 @@
 import CLI from './CLI'
 
-function simulateArgv (args) {
+function simulateArgv (args: string) {
   return `node main.js ${args}`.split(' ')
 }
 

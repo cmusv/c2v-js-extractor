@@ -15,11 +15,10 @@ rand.someMethod()
 
 helloThere()
 
-
 if (true) {
-  function foo() {
+  function foo () {
     console.log('foo')
-    function nestedFunction() {}
+    function nestedFunction () {}
     return nestedFunction
   }
   const nestedFn = foo()

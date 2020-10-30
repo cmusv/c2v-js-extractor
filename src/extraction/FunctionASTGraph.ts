@@ -1,4 +1,4 @@
-import BiDiNode from "./BiDiNode"
+import BiDiNode from './BiDiNode'
 
 class FunctionASTGraph {
   constructor (fnAst) {
@@ -9,9 +9,6 @@ class FunctionASTGraph {
 
   constructGraph (node, parent) {
     const id = this.generateNodeID(node)
-    const bn = new BiDiNode(id, node, parent)
-    if (node.body )
-
   }
 
   generateNodeID (node) {

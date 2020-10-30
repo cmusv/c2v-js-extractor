@@ -1,4 +1,4 @@
-import CLI from './src/CLI.js'
+import CLI from './CLI'
 
 try {
   const cli = new CLI()

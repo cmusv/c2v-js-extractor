@@ -1,6 +1,5 @@
-function bar() {
-
-  return "bar"
+function bar () {
+  return 'bar'
 }
 
 module.exports = {
