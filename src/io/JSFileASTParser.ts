@@ -6,8 +6,26 @@
 import fs from 'fs'
 import * as esprima from 'esprima'
 
+interface ICodePosition {
+  line: number
+  column: number
+}
+
+interface ICodeLocation {
+  start: ICodePosition
+  end: ICodePosition
+
+}
+
 class JSFileASTParser {
-  constructor (filePath, parser = esprima) {
+  filePath: string
+  parser: any
+  loaded: boolean
+  functions: any
+  raw: any
+  ast: any
+
+  constructor (filePath: string, parser = esprima) {
     this.filePath = filePath
     this.parser = parser
     this.loaded = false
@@ -15,7 +33,7 @@ class JSFileASTParser {
   }
 
   parse () {
-    const contents = fs.readFileSync(this.filePath, 'UTF-8')
+    const contents = fs.readFileSync(this.filePath, { encoding: 'utf-8' })
     this.raw = contents
     const properties = {
       loc: true
@@ -32,7 +50,7 @@ class JSFileASTParser {
     return this.ast
   }
 
-  isModule (rawCode) {
+  isModule (rawCode: string) {
     return rawCode.includes('export ') ||
     rawCode.includes('import ') ||
     rawCode.includes('from ')
@@ -43,12 +61,12 @@ class JSFileASTParser {
     return this.functions
   }
 
-  locationId (loc) {
+  locationId (loc: ICodeLocation) {
     const { start, end } = loc
     return `${this.filePath}:L${start.line}C${start.column}:L${end.line}C${end.column}`
   }
 
-  extractFunctions (node) {
+  extractFunctions (node: any) {
     let fnName, key
     switch (node.type) {
       case 'FunctionDeclaration':

@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "test": "jest",
-    "lint": "standardx", 
+    "lint": "standardx",
     "start": "npm run build:live",
     "build": "tsc -p .",
     "build:live": "nodemon --watch 'src/**/*.ts' --exec \"ts-node\" src/index.ts"
@@ -55,7 +55,9 @@
   },
   "standardx": {
     "parser": "@typescript-eslint/parser",
-    "plugins": [ "@typescript-eslint/eslint-plugin" ] ,
+    "plugins": [
+      "@typescript-eslint/eslint-plugin"
+    ],
     "ignore": [
       "fixtures",
       "build"

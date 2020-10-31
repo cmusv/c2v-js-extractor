@@ -7,15 +7,18 @@ import util from 'util'
 import path from 'path'
 
 class FolderRecursiveSearcher {
+  readdir: any
+  openDir: any
+
   constructor () {
     this.readdir = util.promisify(fs.readdir)
     this.openDir = util.promisify(fs.open)
   }
 
-  async recurseDirSearch (directory, extension) {
+  async recurseDirSearch (directory: string, extension: string): Promise<string[]> {
     const regex = new RegExp(`${extension}$`, 'i')
     const dirents = await this.readdir(directory, { withFileTypes: true })
-    let files = []
+    let files: string[] = []
     for (const file of dirents) {
       const properPath = path.join(directory, file.name)
 
@@ -29,9 +32,9 @@ class FolderRecursiveSearcher {
     return files
   }
 
-  async listSubdirs (directory) {
+  async listSubdirs (directory: string): Promise<string[]> {
     const dirents = await this.readdir(directory, { withFileTypes: true })
-    const result = []
+    const result: string[] = []
     for (const ent of dirents) {
       if (ent.isDirectory()) {
         result.push(path.join(directory, ent.name))
