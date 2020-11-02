@@ -107,22 +107,6 @@ class ExtractionOrchestrator {
       console.error(e)
     }
   }
-
-  // async extractAsts () {
-  //   // get all js file paths in the target dir
-  //   const jsFiles = await this.getAllJSFiles()
-  //   let allAsts = {}
-  //   for (const file of jsFiles) {
-  //     try {
-  //       const parser = new JSFileASTParser(file)
-  //       const fns = parser.getFns()
-  //       allAsts = { ...allAsts, ...fns }
-  //     } catch (e) {
-  //       console.log(`parsing error for file=${file}`)
-  //     }
-  //   }
-  //   return allAsts
-  // }
 }
 
 export default ExtractionOrchestrator

@@ -16,7 +16,9 @@ export enum ContextPathDirection {
 
 export interface IContextGraphEdge {
   sourceNodeId: string
+  sourceNode: IContextNode
   targetNodeId: string
+  targetNode: IContextNode
   direction: ContextPathDirection
 }
 
@@ -26,6 +28,9 @@ export interface IContextNode {
   value: string
   isTerminal: boolean
   neighbors: Map<string, IContextGraphEdge>
+  addNeighbor(nodeId: string, neighbor: IContextGraphEdge): void
+  hasNeighbor(nodeId: string): boolean
+  getNeighbor(nodeId: string): IContextGraphEdge|undefined
 }
 
 export interface IContextPath {
@@ -41,7 +46,7 @@ export interface IContextGraph {
 }
 
 export interface ISource2ASTParser {
-  parse(filePath: string): IContextGraph
+  parse(filePath: string): IContextGraph[]
 }
 
 export interface IDataSetEntry {
