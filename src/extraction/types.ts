@@ -66,5 +66,5 @@ export interface IDataSetWriter {
 }
 
 export interface ISourceFileFinder {
-  recursiveFind(targetDirPath: string, targetExtension: string): string[]
+  recursiveFind(targetDirPath: string, targetExtension: string): Promise<string[]>
 }

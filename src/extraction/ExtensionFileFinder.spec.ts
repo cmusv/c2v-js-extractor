@@ -1,19 +1,15 @@
 /**
  * Tests
- * - returns all js files in the fixtures directory
- * - returns all immediate subdirs of fixtures directory
- * - handles paths with or without slashes
- * - properly ignores files of other extensions
- * - throws error if directory doesn't exist
- * - throws error if given path is not a directory
+ * - given an extension correctly finds all files and returns array of paths
+ * - given an extension, correctly ignores files
  */
 
-import FolderRecursiveSearcher from './FolderRecursiveSearcher'
+import ExtensionFileFinder from './ExtensionFileFinder'
 
-const searcher = new FolderRecursiveSearcher()
+const searcher = new ExtensionFileFinder()
 
 test('returns all js files in the fixtures directory', async () => {
-  const results = await searcher.recurseDirSearch('fixtures/test-simple', '.js')
+  const results = await searcher.recursiveFind('fixtures/test-simple', '.js')
   expect(results.length).toBe(4)
   expect(results).toContain('fixtures/test-simple/main.js')
   expect(results).toContain('fixtures/test-simple/src/module.js')
@@ -30,7 +26,7 @@ test('returns all immediate subdirs of fixtures directory', async () => {
 })
 
 test('handles paths in os agnostic way', async () => {
-  const results = await searcher.recurseDirSearch('fixtures/test-simple/', '.js')
+  const results = await searcher.recursiveFind('fixtures/test-simple/', '.js')
   expect(results.length).toBe(4)
   expect(results).toContain('fixtures/test-simple/main.js')
   expect(results).toContain('fixtures/test-simple/src/module.js')
@@ -39,7 +35,7 @@ test('handles paths in os agnostic way', async () => {
 })
 
 test('proper ignores files of other extensions', async () => {
-  const results = await searcher.recurseDirSearch('fixtures/test-wrongtype/', '.js')
+  const results = await searcher.recursiveFind('fixtures/test-wrongtype/', '.js')
   expect(results.length).toBe(0)
   expect(results).toStrictEqual([])
 })
@@ -47,7 +43,7 @@ test('proper ignores files of other extensions', async () => {
 test('throws error if directory does not exist', async () => {
   const path = 'noexists'
   async function shouldThrow () {
-    const result = await searcher.recurseDirSearch(path, '.js')
+    const result = await searcher.recursiveFind(path, '.js')
     return result
   }
   await expect(shouldThrow()).rejects.toThrow()
@@ -56,7 +52,7 @@ test('throws error if directory does not exist', async () => {
 test('throws error if given path is not a directory', async () => {
   const path = 'fixtures/main.js'
   async function shouldThrow () {
-    const result = await searcher.recurseDirSearch(path, '.js')
+    const result = await searcher.recursiveFind(path, '.js')
     return result
   }
   await expect(shouldThrow()).rejects.toThrow()
