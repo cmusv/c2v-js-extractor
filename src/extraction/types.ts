@@ -1,17 +1,22 @@
 
-interface ICodePosition {
+export interface ICodePosition {
   line: number
   column: number
 }
 
-interface ICodeLocation {
+export interface ICodeLocation {
   start: ICodePosition
   end: ICodePosition
 }
 
+export interface IContextLocation {
+  filePath: string
+  location: ICodeLocation
+}
+
 export enum ContextPathDirection {
   UP = '^',
-  DOWN = '_'
+  DOWN = '|'
 }
 
 export interface IContextGraphEdge {
@@ -41,6 +46,7 @@ export interface IContextPath {
 
 export interface IContextGraph {
   rawAST: any
+  location: IContextLocation
   root: IContextNode
   getAllContextPaths(maxLength: number): IContextPath[]
 }

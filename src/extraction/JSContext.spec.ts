@@ -40,7 +40,7 @@ class Test {
 test('can convert esprima FunctionDeclaration node into JSFnContextGraph and return context paths', () => {
   const program = esprima.parseScript(testFn1)
   const fn = program.body[0]
-  const graph = new JSFnContextGraph(fn)
+  const graph = new JSFnContextGraph('test', fn)
   expect(graph.root.type).toBe('FunctionDeclaration')
   const contextPaths = graph.getAllContextPaths(3)
   expect(contextPaths.length).toBe(5)

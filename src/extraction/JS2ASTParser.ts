@@ -27,7 +27,7 @@ export default class JS2ASTParser implements ISource2ASTParser {
     }
     const results: JSFnContextGraph[] = []
     for (const ast of fnAsts) {
-      const graph = new JSFnContextGraph(ast)
+      const graph = new JSFnContextGraph(filePath, ast)
       results.push(graph)
     }
     return results

@@ -64,13 +64,8 @@ class ExtractionOrchestrator {
   }
 
   async findAllSourceFiles (): Promise<string[]> {
-    const subdirs = await this.listSourceProjectDirs()
-    let allFilePaths: string[] = []
-    for (const dir of subdirs) {
-      const files = await this.sourceFileFinder.recursiveFind(dir, this.targetExtension)
-      allFilePaths = allFilePaths.concat(files)
-    }
-    return allFilePaths
+    const files = await this.sourceFileFinder.recursiveFind(this.sourceCodeDir, this.targetExtension)
+    return files
   }
 
   processAllSamplesToDataEntries (samples: IContextGraph[]): IDataSetEntry[] {
@@ -85,7 +80,16 @@ class ExtractionOrchestrator {
   }
 
   async extractAllSamples (): Promise<IContextGraph[]> {
-    return []
+    // recursively find all target files in the sourceCodeDir
+    // extract fnAsts from each file and combine to one large list
+    // return the list
+    let samples: IContextGraph[] = []
+    const allFilePaths = await this.findAllSourceFiles()
+    for (const path of allFilePaths) {
+      const asts = this.sourceParser.parse(path)
+      samples = samples.concat(asts)
+    }
+    return samples
   }
 
   async writeCollectionToFiles (collection: IDataSetCollection): Promise<void> {

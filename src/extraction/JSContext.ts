@@ -1,4 +1,4 @@
-import { ContextPathDirection, IContextPath, IContextGraph, IContextGraphEdge, IContextNode } from './types'
+import { ContextPathDirection, IContextPath, IContextGraph, IContextGraphEdge, IContextNode, IContextLocation } from './types'
 import Esprima2NodeFactory from './Esprima2NodeFactory'
 
 export class JSFnContextEdge implements IContextGraphEdge {
@@ -77,10 +77,15 @@ export class JSContextPath implements IContextPath {
 export class JSFnContextGraph implements IContextGraph {
   rawAST: any
   root: JSFnContextNode
+  location: IContextLocation
   leaves: Map<string, JSFnContextNode>
 
-  constructor (rawAST: any) {
+  constructor (filePath:string, rawAST: any) {
     this.rawAST = rawAST
+    this.location = {
+      filePath: filePath,
+      location: rawAST.loc
+    }
     this.leaves = new Map<string, JSFnContextNode>()
     this.root = this.recursiveBuild(this.rawAST)
   }

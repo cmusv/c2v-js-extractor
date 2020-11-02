@@ -22,6 +22,7 @@
   "homepage": "https://github.com/shinmyung0/c2v-js-extractor#readme",
   "dependencies": {
     "commander": "^6.1.0",
+    "csv-parse": "^4.12.0",
     "esprima": "^4.0.1"
   },
   "devDependencies": {
