@@ -63,7 +63,8 @@
     ],
     "ignore": [
       "fixtures/",
-      "build/"
+      "build/",
+      "raw_code/"
     ]
   }
 }

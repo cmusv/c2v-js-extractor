@@ -124,8 +124,7 @@ class ExtractionOrchestrator {
         const asts = this.sourceParser.parse(sampleFile)
         samples = samples.concat(asts)
       } catch (e) {
-        console.error(`parsing error occurred for : ${sampleFile}`)
-        console.error(e)
+        console.error(`parsing error occurred for : ${sampleFile}, skipping...`)
       }
     }
     return samples
@@ -133,9 +132,9 @@ class ExtractionOrchestrator {
 
   async writeCollectionToFiles (collection: IDataSetCollection): Promise<void> {
     const { train, test, validation } = collection
-    this.datasetWriter.writeTo(train, `${this.datasetOutputDir}/train.raw.txt`, '')
-    this.datasetWriter.writeTo(test, `${this.datasetOutputDir}/test.raw.txt`, '')
-    this.datasetWriter.writeTo(validation, `${this.datasetOutputDir}/validation.raw.txt`, '')
+    this.datasetWriter.writeTo(train, `${this.datasetOutputDir}/train.raw.txt`)
+    this.datasetWriter.writeTo(test, `${this.datasetOutputDir}/test.raw.txt`)
+    this.datasetWriter.writeTo(validation, `${this.datasetOutputDir}/validation.raw.txt`)
   }
 
   async extract () {

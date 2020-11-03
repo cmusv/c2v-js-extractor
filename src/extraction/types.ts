@@ -69,7 +69,7 @@ export interface IDataSetCollection {
 
 export interface IDataSetWriter {
   fieldDelimiter: string
-  writeTo(dataset: IDataSetEntry[], datasetFilePath: string, dictFilePath: string): void
+  writeTo(dataset: IDataSetEntry[], datasetFilePath: string): void
 }
 
 export interface ISourceFileFinder {

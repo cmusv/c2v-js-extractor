@@ -72,6 +72,13 @@ export class JSContextPath implements IContextPath {
     }
     result = result.substring(1, result.length)
     result = `${this.source.value},${result}`
+
+    const tokens = result.split(',')
+    if (tokens.length !== 3) {
+      console.log(tokens)
+      throw new Error('wrong number of tokens in context path')
+    }
+
     return result
   }
 
@@ -167,10 +174,16 @@ export class JSFnContextGraph implements IContextGraph {
     return null
   }
 
+  nodeContainsIllegalCharacters (node: IContextNode) {
+    return node.value.includes(',') || node.value.includes("'") || node.value.includes('"') || node.value.includes(';') || node.value.includes('*')
+  }
+
   generateSourceTargetPairs () {
     const pairs = []
     for (const source of this.leaves.values()) {
+      if (source.value.includes(',') || source.value.includes("'") || source.value.includes('"')) continue
       for (const target of this.leaves.values()) {
+        if (target.value.includes(',') || target.value.includes("'") || target.value.includes('"')) continue
         if (source !== target) {
           pairs.push({
             source,

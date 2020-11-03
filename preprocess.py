@@ -80,6 +80,8 @@ def context_full_found(context_parts, word_to_count, path_to_count):
 
 
 def context_partial_found(context_parts, word_to_count, path_to_count):
+    if len(context_parts) != 3: 
+        print(context_parts)
     return context_parts[0] in word_to_count \
            or context_parts[1] in path_to_count or context_parts[2] in word_to_count
 

@@ -1,4 +1,4 @@
 project,fpath,sline,scol,eline,ecol,label
 test-simple,main.js,3,0,8,1,safe
 test-simple,main.js,21,4,21,33,safe
-test-simple,main.js,19,2,23,3,safe
+test-simple,main.js,19,2,23,3,xss
