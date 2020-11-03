@@ -35,7 +35,7 @@ class ExtractionOrchestrator {
   constructor (options: IOrchestratorOptions) {
     const defaults = {
       sourceCodeDir: 'raw_data',
-      datasetOutputDir: 'data',
+      datasetOutputDir: 'output',
       trainSplitRatio: 0.8,
       targetExtension: '.js',
       defaultLabel: 'safe',
@@ -118,6 +118,7 @@ class ExtractionOrchestrator {
         const asts = this.sourceParser.parse(sampleFile)
         samples = samples.concat(asts)
       } catch (e) {
+        console.error(`parsing error occurred for : ${sampleFile}`)
         console.error(e)
       }
     }
