@@ -5,15 +5,21 @@
  */
 
 import { IContextGraph, IDataSetEntry, IDataSetWriter, ISource2ASTParser, ISourceFileFinder, IDataSetCollection } from './types'
+import LabelDatabase from './LabelDatabase'
+import path from 'path'
+import JS2ASTParser from './JS2ASTParser'
+import C2VWriter from './C2VWriter'
+import ExtensionFileFinder from './ExtensionFileFinder'
 
 export interface IOrchestratorOptions {
-  sourceCodeDir: string
-  datasetOutputDir: string
-  trainSplitRatio: number
-  sourceParser: ISource2ASTParser
-  datasetWriter: IDataSetWriter
-  sourceFileFinder: ISourceFileFinder
-  targetExtension: string
+  sourceCodeDir?: string
+  datasetOutputDir?: string
+  trainSplitRatio?: number
+  sourceParser?: ISource2ASTParser
+  datasetWriter?: IDataSetWriter
+  sourceFileFinder?: ISourceFileFinder
+  targetExtension?: string
+  defaultLabel?: string
 }
 
 class ExtractionOrchestrator {
@@ -24,16 +30,31 @@ class ExtractionOrchestrator {
   datasetWriter: IDataSetWriter
   sourceFileFinder: ISourceFileFinder
   targetExtension: string
+  labelDb: LabelDatabase
 
-  constructor ({
-    sourceCodeDir = 'raw_data',
-    datasetOutputDir = 'data',
-    trainSplitRatio = 0.8,
-    targetExtension = '.js',
-    sourceParser,
-    datasetWriter,
-    sourceFileFinder
-  }: IOrchestratorOptions) {
+  constructor (options: IOrchestratorOptions) {
+    const defaults = {
+      sourceCodeDir: 'raw_data',
+      datasetOutputDir: 'data',
+      trainSplitRatio: 0.8,
+      targetExtension: '.js',
+      defaultLabel: 'safe',
+      sourceParser: new JS2ASTParser(),
+      datasetWriter: new C2VWriter(' '),
+      sourceFileFinder: new ExtensionFileFinder()
+    }
+    const finalOpts = { ...defaults, ...options }
+    const {
+      sourceCodeDir,
+      datasetOutputDir,
+      trainSplitRatio,
+      targetExtension,
+      sourceParser,
+      datasetWriter,
+      sourceFileFinder,
+      defaultLabel
+    } = finalOpts
+
     this.sourceCodeDir = sourceCodeDir
     this.datasetOutputDir = datasetOutputDir
     this.trainSplitRatio = trainSplitRatio
@@ -41,6 +62,7 @@ class ExtractionOrchestrator {
     this.sourceParser = sourceParser
     this.datasetWriter = datasetWriter
     this.sourceFileFinder = sourceFileFinder
+    this.labelDb = new LabelDatabase(sourceCodeDir, path.join(sourceCodeDir, 'labels.csv'), defaultLabel)
   }
 
   trainTestValSplitSamples (dataArray: IDataSetEntry[]): IDataSetCollection {
@@ -69,14 +91,19 @@ class ExtractionOrchestrator {
   }
 
   processAllSamplesToDataEntries (samples: IContextGraph[]): IDataSetEntry[] {
-    return []
-  }
-
-  processSampleToDataEntry (sample: IContextGraph): IDataSetEntry {
-    return {
-      label: 'noop',
-      features: ['']
+    const entries: IDataSetEntry[] = []
+    for (const sample of samples) {
+      const contextPaths = sample.getAllContextPaths(100)
+      const label = this.labelDb.getLabel(sample.location)
+      const features = contextPaths.map(e => e.printable)
+      const entry = {
+        label,
+        features
+      }
+      entries.push(entry)
     }
+
+    return entries
   }
 
   async extractAllSamples (): Promise<IContextGraph[]> {
@@ -85,18 +112,25 @@ class ExtractionOrchestrator {
     // return the list
     let samples: IContextGraph[] = []
     const allFilePaths = await this.findAllSourceFiles()
-    for (const path of allFilePaths) {
-      const asts = this.sourceParser.parse(path)
-      samples = samples.concat(asts)
+    for (const sampleFile of allFilePaths) {
+      try {
+        console.log(`processing: ${sampleFile}`)
+        const asts = this.sourceParser.parse(sampleFile)
+        samples = samples.concat(asts)
+      } catch (e) {
+        console.error(e)
+      }
     }
     return samples
   }
 
   async writeCollectionToFiles (collection: IDataSetCollection): Promise<void> {
-
+    console.log(collection)
   }
 
   async extract () {
+    // load the labels database
+    await this.labelDb.loadLabels()
     // get all the samples into context graphs
     const contextGraphs = await this.extractAllSamples()
     // process all context graphs into data set rows

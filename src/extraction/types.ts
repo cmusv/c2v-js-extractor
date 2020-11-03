@@ -42,6 +42,7 @@ export interface IContextPath {
   source: IContextNode
   target: IContextNode
   path: IContextGraphEdge[]
+  printable: string
 }
 
 export interface IContextGraph {

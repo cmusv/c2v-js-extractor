@@ -2,7 +2,6 @@
   "name": "c2v-js-extractor",
   "version": "1.0.0",
   "description": "code2vec extractor for Javascript",
-  "type": "module",
   "scripts": {
     "test": "jest",
     "lint": "standardx",

@@ -176,7 +176,7 @@ export class JSFnContextGraph implements IContextGraph {
     return pairs
   }
 
-  getAllContextPaths (maxLength: number = -1): JSContextPath[] {
+  getAllContextPaths (maxLength:number): JSContextPath[] {
     const result: JSContextPath[] = []
     const allPairs = this.generateSourceTargetPairs()
     // for each pair of source, target nodes
