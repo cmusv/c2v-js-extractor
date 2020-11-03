@@ -1,4 +1,6 @@
-import { IDataSetWriter } from './types'
+import { IDataSetEntry, IDataSetWriter } from './types'
+import fs from 'fs'
+import md5 from 'md5'
 
 export default class C2VWriter implements IDataSetWriter {
   fieldDelimiter: string;
@@ -6,7 +8,24 @@ export default class C2VWriter implements IDataSetWriter {
     this.fieldDelimiter = delim
   }
 
-  writeTo (datasetFilePath: string, dictFilePath: string): void {
-    throw new Error('Method not implemented.')
+  private entryToString (entry: IDataSetEntry): string {
+    let result = ''
+    result += entry.label
+    for (const feature of entry.features) {
+      const tokens = feature.split(',')
+      const hashedPath = md5(tokens[1])
+      const newFeature = [tokens[0], hashedPath, tokens[2]].join(',')
+      result += ` ${newFeature}`
+    }
+    result += '\n'
+    return result
+  }
+
+  writeTo (dataset: IDataSetEntry[], datasetFilePath: string): void {
+    let result = ''
+    for (const entry of dataset) {
+      result += this.entryToString(entry)
+    }
+    fs.writeFileSync(datasetFilePath, result)
   }
 }

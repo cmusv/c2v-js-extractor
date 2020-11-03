@@ -20,6 +20,7 @@ export interface IOrchestratorOptions {
   sourceFileFinder?: ISourceFileFinder
   targetExtension?: string
   defaultLabel?: string
+  maxPathLength?: number
 }
 
 class ExtractionOrchestrator {
@@ -31,6 +32,7 @@ class ExtractionOrchestrator {
   sourceFileFinder: ISourceFileFinder
   targetExtension: string
   labelDb: LabelDatabase
+  maxPathLength: number
 
   constructor (options: IOrchestratorOptions) {
     const defaults = {
@@ -41,7 +43,8 @@ class ExtractionOrchestrator {
       defaultLabel: 'safe',
       sourceParser: new JS2ASTParser(),
       datasetWriter: new C2VWriter(' '),
-      sourceFileFinder: new ExtensionFileFinder()
+      sourceFileFinder: new ExtensionFileFinder(),
+      maxPathLength: 8
     }
     const finalOpts = { ...defaults, ...options }
     const {
@@ -52,7 +55,8 @@ class ExtractionOrchestrator {
       sourceParser,
       datasetWriter,
       sourceFileFinder,
-      defaultLabel
+      defaultLabel,
+      maxPathLength
     } = finalOpts
 
     this.sourceCodeDir = sourceCodeDir
@@ -62,6 +66,7 @@ class ExtractionOrchestrator {
     this.sourceParser = sourceParser
     this.datasetWriter = datasetWriter
     this.sourceFileFinder = sourceFileFinder
+    this.maxPathLength = maxPathLength
     this.labelDb = new LabelDatabase(sourceCodeDir, path.join(sourceCodeDir, 'labels.csv'), defaultLabel)
   }
 
@@ -93,8 +98,9 @@ class ExtractionOrchestrator {
   processAllSamplesToDataEntries (samples: IContextGraph[]): IDataSetEntry[] {
     const entries: IDataSetEntry[] = []
     for (const sample of samples) {
-      const contextPaths = sample.getAllContextPaths(100)
+      const contextPaths = sample.getAllContextPaths(this.maxPathLength)
       const label = this.labelDb.getLabel(sample.location)
+      // should handle this separately
       const features = contextPaths.map(e => e.printable)
       const entry = {
         label,
@@ -126,7 +132,10 @@ class ExtractionOrchestrator {
   }
 
   async writeCollectionToFiles (collection: IDataSetCollection): Promise<void> {
-    console.log(collection)
+    const { train, test, validation } = collection
+    this.datasetWriter.writeTo(train, `${this.datasetOutputDir}/train.raw.txt`, '')
+    this.datasetWriter.writeTo(test, `${this.datasetOutputDir}/test.raw.txt`, '')
+    this.datasetWriter.writeTo(validation, `${this.datasetOutputDir}/validation.raw.txt`, '')
   }
 
   async extract () {

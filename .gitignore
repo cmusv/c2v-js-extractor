@@ -6,3 +6,5 @@ tmp
 out
 output
 build
+env
+__pycache__

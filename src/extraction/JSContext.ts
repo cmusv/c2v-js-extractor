@@ -61,11 +61,17 @@ export class JSContextPath implements IContextPath {
 
   private pathToString (): string {
     let result = ''
-    for (const edge of this.path) {
+    for (let i = 0; i < this.path.length; i++) {
+      const edge = this.path[i]
       const { direction, targetNode } = edge
-      result += `${direction}${targetNode.value}`
+      if (i === this.path.length - 1) {
+        result += `,${targetNode.value}`
+      } else {
+        result += `${direction}${targetNode.value}`
+      }
     }
-    result = `${this.source.value}${result}`
+    result = result.substring(1, result.length)
+    result = `${this.source.value},${result}`
     return result
   }
 

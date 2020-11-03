@@ -4,10 +4,11 @@ import ExtractionOrchestrator, { IOrchestratorOptions } from './extraction/Extra
 try {
   const cli = new CLI()
   const config = cli.parse()
-  const { inputDir, outputDir, format } = config
+  const { inputDir, outputDir, format, maxPathLength } = config
   const opts: IOrchestratorOptions = {
     sourceCodeDir: inputDir,
-    datasetOutputDir: outputDir
+    datasetOutputDir: outputDir,
+    maxPathLength
   }
   const orchestrator = new ExtractionOrchestrator(opts)
   orchestrator.extract()
