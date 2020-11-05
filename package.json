@@ -64,7 +64,8 @@
     "ignore": [
       "fixtures/",
       "build/",
-      "raw_code/"
+      "raw_code/",
+      "./input.js"
     ]
   }
 }

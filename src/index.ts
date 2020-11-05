@@ -1,16 +1,22 @@
 import CLI from './util/CLI'
 import ExtractionOrchestrator, { IOrchestratorOptions } from './extraction/ExtractionOrchestrator'
+import FileExtractionOrchestrator from './extraction/FileExtractionOrchestrator'
 
 try {
   const cli = new CLI()
   const config = cli.parse()
-  const { inputDir, outputDir, maxPathLength } = config
-  const opts: IOrchestratorOptions = {
-    sourceCodeDir: inputDir,
-    datasetOutputDir: outputDir,
-    maxPathLength
+  const { inputFile, inputDir, outputDir, maxPathLength } = config
+  let orchestrator
+  if (inputFile) {
+    orchestrator = new FileExtractionOrchestrator(inputFile, maxPathLength)
+  } else {
+    const opts: IOrchestratorOptions = {
+      sourceCodeDir: inputDir,
+      datasetOutputDir: outputDir,
+      maxPathLength
+    }
+    orchestrator = new ExtractionOrchestrator(opts)
   }
-  const orchestrator = new ExtractionOrchestrator(opts)
   orchestrator.extract()
 } catch (e) {
   if (!e.code.includes('commander')) {

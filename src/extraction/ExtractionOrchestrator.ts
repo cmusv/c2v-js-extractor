@@ -86,10 +86,6 @@ class ExtractionOrchestrator {
     }
   }
 
-  async listSourceProjectDirs (): Promise<string[]> {
-    return []
-  }
-
   async findAllSourceFiles (): Promise<string[]> {
     const files = await this.sourceFileFinder.recursiveFind(this.sourceCodeDir, this.targetExtension)
     return files
