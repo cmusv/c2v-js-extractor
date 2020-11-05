@@ -43,5 +43,5 @@ test('can convert esprima FunctionDeclaration node into JSFnContextGraph and ret
   const graph = new JSFnContextGraph('test', fn)
   expect(graph.root.type).toBe('FunctionDeclaration')
   const contextPaths = graph.getAllContextPaths(3)
-  expect(contextPaths.length).toBe(5)
+  expect(contextPaths.length).toBe(2)
 })

@@ -4,7 +4,7 @@ import ExtractionOrchestrator, { IOrchestratorOptions } from './extraction/Extra
 try {
   const cli = new CLI()
   const config = cli.parse()
-  const { inputDir, outputDir, format, maxPathLength } = config
+  const { inputDir, outputDir, maxPathLength } = config
   const opts: IOrchestratorOptions = {
     sourceCodeDir: inputDir,
     datasetOutputDir: outputDir,
