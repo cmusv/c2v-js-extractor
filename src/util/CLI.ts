@@ -5,6 +5,7 @@ export interface CLIConfig {
   inputDir?: string
   outputDir?: string
   format?: string
+  defaultLabel?: string
   maxPathLength?: number
 }
 
@@ -27,15 +28,17 @@ export default class CLI {
       .option('-f, --input-file <path>', 'source file to run extraction and print results to stdout')
       .option('-i, --input-dir <path>', 'directory with source code projects')
       .option('-o, --output-dir <path>', 'directory to output files to')
+      .option('-d, --default-label <label>', 'default label value when there does not exist label entry', 'none')
       .option('-l, --max-path-length <length>', 'maximum context path length, should be > 0', (l: string) => parseInt(l), 8)
 
     this.program.parse(this.environment)
-    const { inputFile, inputDir, outputDir, maxPathLength } = this.program
+    const { inputFile, inputDir, outputDir, maxPathLength, defaultLabel } = this.program
 
     this.loadedConfig = {
       inputFile,
       inputDir,
       outputDir,
+      defaultLabel,
       maxPathLength
     }
     this.validate()

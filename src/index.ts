@@ -5,7 +5,7 @@ import FileExtractionOrchestrator from './extraction/FileExtractionOrchestrator'
 try {
   const cli = new CLI()
   const config = cli.parse()
-  const { inputFile, inputDir, outputDir, maxPathLength } = config
+  const { inputFile, inputDir, outputDir, maxPathLength, defaultLabel } = config
   let orchestrator
   if (inputFile) {
     orchestrator = new FileExtractionOrchestrator(inputFile, maxPathLength)
@@ -13,6 +13,7 @@ try {
     const opts: IOrchestratorOptions = {
       sourceCodeDir: inputDir,
       datasetOutputDir: outputDir,
+      defaultLabel,
       maxPathLength
     }
     orchestrator = new ExtractionOrchestrator(opts)

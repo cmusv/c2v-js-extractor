@@ -40,7 +40,7 @@ class ExtractionOrchestrator {
       datasetOutputDir: 'output',
       trainSplitRatio: 0.8,
       targetExtension: '.js',
-      defaultLabel: 'safe',
+      defaultLabel: 'none',
       sourceParser: new JS2ASTParser(),
       datasetWriter: new C2VWriter(' '),
       sourceFileFinder: new ExtensionFileFinder(),
@@ -73,6 +73,9 @@ class ExtractionOrchestrator {
   trainTestValSplitSamples (dataArray: IDataSetEntry[]): IDataSetCollection {
     if (dataArray.length < 3) throw new Error('data set size cannot be smaller than 3')
     if (this.trainSplitRatio <= 0 || this.trainSplitRatio > 0.8) throw new Error('train, test, val ratio should be greater than 0 and less than 0.9')
+
+    // randomly shuffle
+    dataArray.sort(() => Math.random() - 0.5)
 
     const valNum = Math.max(1, Math.round(dataArray.length * (1.0 - this.trainSplitRatio)))
     const left = dataArray.length - valNum
