@@ -49,7 +49,7 @@ export interface IContextGraph {
   rawAST: any
   location: IContextLocation
   root: IContextNode
-  getAllContextPaths(maxLength: number): IContextPath[]
+  getAllContextPaths(maxLength: number, maxEntries: number): IContextPath[]
 }
 
 export interface ISource2ASTParser {
@@ -70,6 +70,8 @@ export interface IDataSetCollection {
 export interface IDataSetWriter {
   fieldDelimiter: string
   writeTo(dataset: IDataSetEntry[], datasetFilePath: string): void
+  appendTo(dataset: IDataSetEntry[], datasetFilePath: string): void
+  convertToEntriesToString(entries: IDataSetEntry[]): string
 }
 
 export interface ISourceFileFinder {

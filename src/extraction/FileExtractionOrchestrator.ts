@@ -5,9 +5,10 @@ import { ISource2ASTParser } from './types'
 export default class FileExtractionOrchestrator {
   inputFile: string
   maxPathLength: number
+  maxEntryLength: number
   sourceParser: ISource2ASTParser
 
-  constructor (inputFile: string, maxPathLength?: number) {
+  constructor (inputFile: string, maxPathLength?: number, maxEntryLength?: number) {
     this.inputFile = inputFile
     this.sourceParser = new JS2ASTParser()
 
@@ -16,6 +17,12 @@ export default class FileExtractionOrchestrator {
       this.maxPathLength = maxPathLength
     } else {
       this.maxPathLength = 8
+    }
+
+    if (maxEntryLength) {
+      this.maxEntryLength = maxEntryLength
+    } else {
+      this.maxEntryLength = 200
     }
   }
 
@@ -28,7 +35,7 @@ export default class FileExtractionOrchestrator {
     const graphs = this.sourceParser.parse(this.inputFile)
     if (graphs.length !== 1) throw new Error(`error: inputFile=${this.inputFile} should only have 1 function declaration`)
     const graph = graphs[0]
-    const contextPaths = graph.getAllContextPaths(this.maxPathLength)
+    const contextPaths = graph.getAllContextPaths(this.maxPathLength, this.maxEntryLength)
     const pathStrs = contextPaths.map(e => e.printable)
     const output = pathStrs.join(' ')
     console.log(output)

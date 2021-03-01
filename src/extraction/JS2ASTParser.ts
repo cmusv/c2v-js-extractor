@@ -13,6 +13,7 @@ export default class JS2ASTParser implements ISource2ASTParser {
     const fnAsts:any[] = []
     const extractor = (node: any) => {
       switch (node.type) {
+        case 'FunctionExpression':
         case 'MethodDefinition':
         case 'FunctionDeclaration':
           fnAsts.push(node)

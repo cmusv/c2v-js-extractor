@@ -25,11 +25,21 @@ export default class C2VWriter implements IDataSetWriter {
     return result
   }
 
-  writeTo (dataset: IDataSetEntry[], datasetFilePath: string): void {
+  convertToEntriesToString(entries: IDataSetEntry[]): string {
     let result = ''
-    for (const entry of dataset) {
+    for (const entry of entries) {
       result += this.entryToString(entry)
     }
+    return result
+  }
+
+  appendTo (dataset: IDataSetEntry[], datasetFilePath: string): void {
+    const result = this.convertToEntriesToString(dataset)
+    fs.appendFileSync(datasetFilePath, result)
+  }
+
+  writeTo (dataset: IDataSetEntry[], datasetFilePath: string): void {
+    const result = this.convertToEntriesToString(dataset)
     fs.writeFileSync(datasetFilePath, result)
   }
 }

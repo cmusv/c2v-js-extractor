@@ -21,7 +21,10 @@ export default class LabelDatabase {
 
   getLabel (contextLocation: IContextLocation): string {
     const key = this.locationToKey(contextLocation)
+
+
     const label = this.labelMappings.get(key)
+
     if (!label) return this.defaultLabel
     return label
   }

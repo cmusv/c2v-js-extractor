@@ -137,6 +137,7 @@ export class JSFnContextGraph implements IContextGraph {
     dist.set(source.id, 0)
 
     for (let i = 0; i < queue.length; i++) {
+
       const currNode = queue[i]
 
       // If we found the node, return the path
@@ -178,8 +179,8 @@ export class JSFnContextGraph implements IContextGraph {
     return node.value.includes(',') || node.value.includes("'") || node.value.includes('"') || node.value.includes(';') || node.value.includes('*')
   }
 
-  generateSourceTargetPairs () {
-    const pairs = []
+  generateSourceTargetPairs (maxEntries: number) {
+    let pairs = []
     for (const source of this.leaves.values()) {
       if (source.value.includes(',') || source.value.includes("'") || source.value.includes('"')) continue
       for (const target of this.leaves.values()) {
@@ -189,20 +190,27 @@ export class JSFnContextGraph implements IContextGraph {
             source,
             target
           })
+
+          if (pairs.length >= maxEntries) return pairs
+
+
         }
       }
     }
     return pairs
   }
 
-  getAllContextPaths (maxLength:number): JSContextPath[] {
+  getAllContextPaths (maxLength:number, maxEntries:number): JSContextPath[] {
     const result: JSContextPath[] = []
-    const allPairs = this.generateSourceTargetPairs()
+    let allPairs = this.generateSourceTargetPairs(maxEntries)
     // for each pair of source, target nodes
     // find the shortest context path within maxLength
     // if no path exists, just
     // if path is found, add the the results
+
     for (const pair of allPairs) {
+      
+
       const { source, target } = pair
       const pathSegments = this.findShortestPath(source, target, maxLength)
       if (pathSegments !== null) {

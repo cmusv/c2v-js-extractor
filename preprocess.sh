@@ -16,16 +16,18 @@ TEST_DATA_FILE=${OUTPUT_DIR}/test.raw.txt
 TARGET_HISTOGRAM_FILE=${OUTPUT_DIR}/${DATASET_NAME}.histo.tgt.c2v
 ORIGIN_HISTOGRAM_FILE=${OUTPUT_DIR}/${DATASET_NAME}.histo.ori.c2v
 PATH_HISTOGRAM_FILE=${OUTPUT_DIR}/${DATASET_NAME}.histo.path.c2v
+NODE_MAX_MEM=8192
 ###########################################################
 
 mkdir -p "${OUTPUT_DIR}"
-
+export NODE_OPTIONS="--max-old-space-size=${NODE_MAX_MEM}"
 
 echo "======== Building extractor... ==========="
 npm run build 
 
 echo "======== Extracting JS files from: ${INPUT_DIR} ========"
 node build/index.js -i "${INPUT_DIR}" -o "${OUTPUT_DIR}"
+
 
 echo ""
 echo "======== Creating histograms from the training data ========"

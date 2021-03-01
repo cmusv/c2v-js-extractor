@@ -10,6 +10,7 @@ import path from 'path'
 import JS2ASTParser from './JS2ASTParser'
 import C2VWriter from './C2VWriter'
 import ExtensionFileFinder from './ExtensionFileFinder'
+import fs from 'fs'
 
 export interface IOrchestratorOptions {
   sourceCodeDir?: string
@@ -20,7 +21,8 @@ export interface IOrchestratorOptions {
   sourceFileFinder?: ISourceFileFinder
   targetExtension?: string
   defaultLabel?: string
-  maxPathLength?: number
+  maxPathLength?: number,
+  maxEntryLength?: number,
 }
 
 class ExtractionOrchestrator {
@@ -33,6 +35,8 @@ class ExtractionOrchestrator {
   targetExtension: string
   labelDb: LabelDatabase
   maxPathLength: number
+  maxEntryLength: number
+  defaultLabel: string
 
   constructor (options: IOrchestratorOptions) {
     const defaults = {
@@ -44,7 +48,8 @@ class ExtractionOrchestrator {
       sourceParser: new JS2ASTParser(),
       datasetWriter: new C2VWriter(' '),
       sourceFileFinder: new ExtensionFileFinder(),
-      maxPathLength: 8
+      maxPathLength: 8,
+      maxEntryLength: 200
     }
     const finalOpts = { ...defaults, ...options }
     const {
@@ -56,7 +61,8 @@ class ExtractionOrchestrator {
       datasetWriter,
       sourceFileFinder,
       defaultLabel,
-      maxPathLength
+      maxPathLength,
+      maxEntryLength
     } = finalOpts
 
     this.sourceCodeDir = sourceCodeDir
@@ -67,6 +73,8 @@ class ExtractionOrchestrator {
     this.datasetWriter = datasetWriter
     this.sourceFileFinder = sourceFileFinder
     this.maxPathLength = maxPathLength
+    this.maxEntryLength = maxEntryLength
+    this.defaultLabel = defaultLabel
     this.labelDb = new LabelDatabase(sourceCodeDir, path.join(sourceCodeDir, 'labels.csv'), defaultLabel)
   }
 
@@ -96,19 +104,41 @@ class ExtractionOrchestrator {
 
   processAllSamplesToDataEntries (samples: IContextGraph[]): IDataSetEntry[] {
     const entries: IDataSetEntry[] = []
+    let num = 1
     for (const sample of samples) {
-      const contextPaths = sample.getAllContextPaths(this.maxPathLength)
-      const label = this.labelDb.getLabel(sample.location)
-      // should handle this separately
-      const features = contextPaths.map(e => e.printable)
-      const entry = {
-        label,
-        features
+
+      console.log(`${sample.location.filePath} processing...`)
+
+
+      const contextPaths = sample.getAllContextPaths(this.maxPathLength, this.maxEntryLength)
+      if (contextPaths.length > 0) {
+        const label = this.labelDb.getLabel(sample.location)
+
+        // should handle this separately
+        const features = contextPaths.map(e => e.printable)
+        const entry = {
+          label,
+          features
+        }
+        entries.push(entry)
+        num += 1
       }
-      entries.push(entry)
     }
 
     return entries
+  }
+
+
+  extractSamples(filePath: string): IContextGraph[] {
+
+    const results: IContextGraph[] = []
+    try {
+      const asts = this.sourceParser.parse(filePath)
+      return asts
+    } catch(e) {
+      console.error(`parsing error occurred for : ${filePath}, skipping...`)
+    }
+    return results
   }
 
   async extractAllSamples (): Promise<IContextGraph[]> {
@@ -118,18 +148,22 @@ class ExtractionOrchestrator {
     let samples: IContextGraph[] = []
     const allFilePaths = await this.findAllSourceFiles()
     for (const sampleFile of allFilePaths) {
-      try {
-        console.log(`processing: ${sampleFile}`)
-        const asts = this.sourceParser.parse(sampleFile)
-        samples = samples.concat(asts)
-      } catch (e) {
-        console.error(`parsing error occurred for : ${sampleFile}, skipping...`)
-      }
+      const asts = this.extractSamples(sampleFile)
+      samples = samples.concat(asts)
     }
     return samples
   }
 
+  createOutputDir() {
+    if (!fs.existsSync(this.datasetOutputDir)) {
+      fs.mkdirSync(this.datasetOutputDir)
+    }
+  }
+
   async writeCollectionToFiles (collection: IDataSetCollection): Promise<void> {
+    
+    this.createOutputDir()
+
     const { train, test, validation } = collection
     this.datasetWriter.writeTo(train, `${this.datasetOutputDir}/train.raw.txt`)
     this.datasetWriter.writeTo(test, `${this.datasetOutputDir}/test.raw.txt`)
@@ -139,6 +173,7 @@ class ExtractionOrchestrator {
   async extract () {
     // load the labels database
     await this.labelDb.loadLabels()
+
     // get all the samples into context graphs
     const contextGraphs = await this.extractAllSamples()
     // process all context graphs into data set rows

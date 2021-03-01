@@ -7,6 +7,7 @@ export interface CLIConfig {
   format?: string
   defaultLabel?: string
   maxPathLength?: number
+  maxEntryLength?: number
 }
 
 export default class CLI {
@@ -30,27 +31,31 @@ export default class CLI {
       .option('-o, --output-dir <path>', 'directory to output files to')
       .option('-d, --default-label <label>', 'default label value when there does not exist label entry', 'none')
       .option('-l, --max-path-length <length>', 'maximum context path length, should be > 0', (l: string) => parseInt(l), 8)
+      .option('-l, --max-entry-length <length>', 'maximum length of single entry, should be > 0', (l: string) => parseInt(l), 200)
 
     this.program.parse(this.environment)
-    const { inputFile, inputDir, outputDir, maxPathLength, defaultLabel } = this.program
+    const { inputFile, inputDir, outputDir, maxPathLength, defaultLabel, maxEntryLength } = this.program
 
     this.loadedConfig = {
       inputFile,
       inputDir,
       outputDir,
       defaultLabel,
-      maxPathLength
+      maxPathLength,
+      maxEntryLength
     }
     this.validate()
     return this.loadedConfig
   }
 
   validate (): void {
-    const { inputFile, inputDir, outputDir, maxPathLength } = this.loadedConfig
+    const { inputFile, inputDir, outputDir, maxPathLength, maxEntryLength } = this.loadedConfig
     if ((inputFile && inputDir) || (inputFile && outputDir)) throw new Error('error: input-file and input-dir/output-dir cannot be set together')
     if (!inputFile && !inputDir && !outputDir) throw new Error('error: either input-file or input-dir/output-dir should be set')
     if ((inputDir && !outputDir) || (outputDir && !inputDir)) throw new Error('error: input-dir/output-dir should both be set')
-    if (maxPathLength && maxPathLength <= 0) throw new Error('error: max length should be greater than 0')
-    if (maxPathLength && isNaN(maxPathLength)) throw new Error('error: max length should be an integer number')
+    if (maxPathLength && maxPathLength <= 0) throw new Error('error: max path length should be greater than 0')
+    if (maxPathLength && isNaN(maxPathLength)) throw new Error('error: max path length should be an integer number')
+    if (maxEntryLength && maxEntryLength <= 0) throw new Error('error: max entry length should be greater than 0')
+    if (maxEntryLength && isNaN(maxEntryLength)) throw new Error('error: max entry length should be an integer number')
   }
 }
