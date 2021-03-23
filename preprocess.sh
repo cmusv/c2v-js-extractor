@@ -1,4 +1,7 @@
 #!/usr/bin/env bash
+
+set -e
+
 ###########################################################
 
 DATASET_NAME=testing
@@ -23,7 +26,7 @@ mkdir -p "${OUTPUT_DIR}"
 export NODE_OPTIONS="--max-old-space-size=${NODE_MAX_MEM}"
 
 echo "======== Building extractor... ==========="
-npm run build 
+npm run build
 
 echo "======== Extracting JS files from: ${INPUT_DIR} ========"
 node build/index.js -i "${INPUT_DIR}" -o "${OUTPUT_DIR}"

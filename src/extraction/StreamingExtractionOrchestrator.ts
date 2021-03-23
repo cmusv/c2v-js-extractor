@@ -61,6 +61,7 @@ export default class StreamingExtractionOrchestrator extends ExtractionOrchestra
       console.log(`processed default=${defaultLabelEntries.length}, other=${otherLabelEntries.length} entries `)
 
       buffer = buffer.concat(defaultLabelEntries)
+      buffer = buffer.concat(otherLabelEntries)
 
       // TODO: remove artificial multiply function
       // this code was used to artificially balance data samples for later processing, but was very primitive
@@ -84,6 +85,13 @@ export default class StreamingExtractionOrchestrator extends ExtractionOrchestra
       }
 
       console.log(`current total: ${totalNum}`)
+    }
+
+    if (buffer.length > 0) {
+      this.appendSamples(buffer)
+
+      totalNum += buffer.length
+      buffer = []
     }
 
     console.log(`Total data points so far : ${totalNum}`)
