@@ -1,4 +1,3 @@
-import { EROFS } from 'constants'
 import JS2ASTParser from './JS2ASTParser'
 import { ISource2ASTParser } from './types'
 

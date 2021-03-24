@@ -106,9 +106,7 @@ class ExtractionOrchestrator {
     const entries: IDataSetEntry[] = []
     let num = 1
     for (const sample of samples) {
-
       console.log(`${sample.location.filePath} processing...`)
-
 
       const contextPaths = sample.getAllContextPaths(this.maxPathLength, this.maxEntryLength)
       if (contextPaths.length > 0) {
@@ -128,14 +126,12 @@ class ExtractionOrchestrator {
     return entries
   }
 
-
-  extractSamples(filePath: string): IContextGraph[] {
-
+  extractSamples (filePath: string): IContextGraph[] {
     const results: IContextGraph[] = []
     try {
       const asts = this.sourceParser.parse(filePath)
       return asts
-    } catch(e) {
+    } catch (e) {
       console.error(`parsing error occurred for : ${filePath}, skipping...`)
     }
     return results
@@ -154,14 +150,13 @@ class ExtractionOrchestrator {
     return samples
   }
 
-  createOutputDir() {
+  createOutputDir () {
     if (!fs.existsSync(this.datasetOutputDir)) {
       fs.mkdirSync(this.datasetOutputDir)
     }
   }
 
   async writeCollectionToFiles (collection: IDataSetCollection): Promise<void> {
-    
     this.createOutputDir()
 
     const { train, test, validation } = collection

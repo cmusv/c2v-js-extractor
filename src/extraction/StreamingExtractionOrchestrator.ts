@@ -52,30 +52,14 @@ export default class StreamingExtractionOrchestrator extends ExtractionOrchestra
 
     let buffer: IDataSetEntry[] = []
 
-    for (const entry of this.labelDb.labelMappings.entries()) {
-      const [key, labelVal] = entry
-      const [filePath, startLocStr, endLocStr] = key.split(':')
-
+    const allFilePaths = await this.findAllSourceFiles()
+    for (const filePath of allFilePaths) {
       const asts = this.extractSamples(filePath)
       const [defaultLabelEntries, otherLabelEntries] = this.splitProcessAllSamplesToDataEntries(asts)
       console.log(`processed default=${defaultLabelEntries.length}, other=${otherLabelEntries.length} entries `)
 
       buffer = buffer.concat(defaultLabelEntries)
       buffer = buffer.concat(otherLabelEntries)
-
-      // TODO: remove artificial multiply function
-      // this code was used to artificially balance data samples for later processing, but was very primitive
-      // should be replaced with something better
-      // if (otherLabelEntries.length > 0 && defaultLabelEntries.length > otherLabelEntries.length) {
-      //   const balancedDataset = this.balanceDataset(defaultLabelEntries, otherLabelEntries)
-      //   console.log(`=> normalized dataset size: ${otherLabelEntries.length} -> ${balancedDataset.length}`)
-      //   buffer = buffer.concat(balancedDataset)
-      // } else {
-      //   const ratio = 10
-      //   console.log(`=> adding multplied dataset: ${ratio}`)
-      //   const multipliedDataset = this.multiplyDataset(ratio, otherLabelEntries)
-      //   buffer = buffer.concat(multipliedDataset)
-      // }
 
       if (buffer.length >= bufferSize) {
         this.appendSamples(buffer)
@@ -95,26 +79,5 @@ export default class StreamingExtractionOrchestrator extends ExtractionOrchestra
     }
 
     console.log(`Total data points so far : ${totalNum}`)
-
-    // initialize the total data entries
-    // load the labels database
-    // for each label entry,
-    // load the corresponding file with a relevant label
-    // parse it into fn asts
-    // process all the return fn asts in that file
-    // write out the intermediate results to a file
-    // determine which file depending on ratio of train/test/val
-    // sample from distribution based on ratio for each entry
-    // check that the returned context paths length is greater than 0
-    // add the number of data points we wrote to the total
-
-    // check the size of the dataset to see if we hit our limit
-    // if we hit it exit
-    // else, just recursively iterate through the current input folder's js files
-    // for each file
-    // parse to fn asts
-    // process context paths
-    // write out to target intermediate file
-    //
   }
 }
